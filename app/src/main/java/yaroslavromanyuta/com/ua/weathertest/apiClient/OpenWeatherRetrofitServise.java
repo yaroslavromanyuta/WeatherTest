@@ -9,7 +9,7 @@ import yaroslavromanyuta.com.ua.weathertest.entities.FindResponse;
  * Created by Yaroslav on 09.08.2016.
  */
 public interface OpenWeatherRetrofitServise {
-    @GET("/find")
+    @GET("find")
     Call<FindResponse> findCityWeather(@Query("q") String city,
                                        @Query("appid") String apiKey);
 

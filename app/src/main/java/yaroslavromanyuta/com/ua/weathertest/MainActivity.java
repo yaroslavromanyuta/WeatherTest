@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().getLoader(0).forceLoad();
     }
 
     @Override

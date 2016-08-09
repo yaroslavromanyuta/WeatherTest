@@ -46,8 +46,12 @@ public class ResponseGetter {
         Call<CityResponse> call = cityRetrofitServise.getCities(context.getString(R.string.city_sheet_id),
                 context.getString(R.string.city_sheet_name));
 
+
+
         Response<CityResponse> response = null;
         response = call.execute();
+
+        Log.d(TAG, "getCities: URL" + response.raw());
 
         Log.d(TAG, "getCities: " + "response created. HTTP status code= " + response.code() + "; message= " + response.message() +
                 "; success = " + response.isSuccessful() );
