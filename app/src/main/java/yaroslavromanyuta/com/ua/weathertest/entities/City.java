@@ -7,25 +7,29 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 
-public class Rain {
+public class City {
 
-    @SerializedName("3h")
+    @SerializedName("city_name")
     @Expose
-    private double _3h;
+    private String cityName;
 
-    public Rain() {
+
+    public City() {
     }
 
-    public Rain(double _3h) {
-        this._3h = _3h;
+
+    public City(String cityName) {
+        this.cityName = cityName;
     }
 
-    public double get3h() {
-        return _3h;
+
+    public String getCityName() {
+        return cityName;
     }
 
-    public void set3h(double _3h) {
-        this._3h = _3h;
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     @Override

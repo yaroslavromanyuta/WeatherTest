@@ -1,5 +1,5 @@
 
-package yaroslavromanyuta.com.ua.weathertest.Entities;
+package yaroslavromanyuta.com.ua.weathertest.entities;
 
 import java.util.ArrayList;
 import java.util.List;

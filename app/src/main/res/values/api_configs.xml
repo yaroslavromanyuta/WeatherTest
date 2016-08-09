@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="openweather_base_url">http://api.openweathermap.org/data/2.5</string>
+    <string name="api_key">63b082c7298009245b1a6a91c683ed5e</string>
+    <string name="city_base_url">https://script.google.com/macros/s/AKfycbxOLElujQcy1-ZUer1KgEvK16gkTLUqYftApjNCM_IRTL3HSuDk</string>
+</resources>
