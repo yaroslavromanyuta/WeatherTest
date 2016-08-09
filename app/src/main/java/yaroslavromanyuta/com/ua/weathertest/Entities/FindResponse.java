@@ -22,17 +22,17 @@ public class FindResponse {
     private int count;
     @SerializedName("list")
     @Expose
-    private List<FindResponseListItem> findResponseListItem = new ArrayList<FindResponseListItem>();
+    private List<CityInfo> cityInfo = new ArrayList<CityInfo>();
 
 
     public FindResponse() {
     }
 
-    public FindResponse(String message, String cod, int count, java.util.List<FindResponseListItem> findResponseListItem) {
+    public FindResponse(String message, String cod, int count, java.util.List<CityInfo> cityInfo) {
         this.message = message;
         this.cod = cod;
         this.count = count;
-        this.findResponseListItem = findResponseListItem;
+        this.cityInfo = cityInfo;
     }
 
 
@@ -61,13 +61,13 @@ public class FindResponse {
         this.count = count;
     }
 
-    public java.util.List<FindResponseListItem> getFindResponseListItem() {
-        return findResponseListItem;
+    public java.util.List<CityInfo> getCityInfo() {
+        return cityInfo;
     }
 
 
-    public void setFindResponseListItem(java.util.List<FindResponseListItem> findResponseListItem) {
-        this.findResponseListItem = findResponseListItem;
+    public void setCityInfo(java.util.List<CityInfo> cityInfo) {
+        this.cityInfo = cityInfo;
     }
 
     @Override

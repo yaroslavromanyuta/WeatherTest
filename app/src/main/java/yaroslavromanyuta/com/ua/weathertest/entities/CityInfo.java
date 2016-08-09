@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 
-public class FindResponseListItem {
+public class CityInfo {
 
     @SerializedName("id")
     @Expose
@@ -43,10 +43,10 @@ public class FindResponseListItem {
     private List<Weather> weather = new ArrayList<Weather>();
 
 
-    public FindResponseListItem() {
+    public CityInfo() {
     }
 
-    public FindResponseListItem(int id, String name, Coord coord, Main main, int dt, Wind wind, Sys sys, Rain rain, Clouds clouds, java.util.List<Weather> weather) {
+    public CityInfo(int id, String name, Coord coord, Main main, int dt, Wind wind, Sys sys, Rain rain, Clouds clouds, java.util.List<Weather> weather) {
         this.id = id;
         this.name = name;
         this.coord = coord;
