@@ -38,6 +38,9 @@ public class CityInfo {
     @SerializedName("clouds")
     @Expose
     private Clouds clouds;
+    @SerializedName("snow")
+    @Expose
+    private Snow snow;
     @SerializedName("weather")
     @Expose
     private List<Weather> weather = new ArrayList<Weather>();
@@ -46,7 +49,7 @@ public class CityInfo {
     public CityInfo() {
     }
 
-    public CityInfo(int id, String name, Coord coord, Main main, int dt, Wind wind, Sys sys, Rain rain, Clouds clouds, java.util.List<Weather> weather) {
+    public CityInfo(int id, String name, Coord coord, Main main, int dt, Wind wind, Sys sys, Rain rain, Clouds clouds, Snow snow, java.util.List<Weather> weather) {
         this.id = id;
         this.name = name;
         this.coord = coord;
@@ -56,6 +59,7 @@ public class CityInfo {
         this.sys = sys;
         this.rain = rain;
         this.clouds = clouds;
+        this.snow = snow;
         this.weather = weather;
     }
 
@@ -124,6 +128,13 @@ public class CityInfo {
         this.rain = rain;
     }
 
+    public Snow getSnow() {
+        return snow;
+    }
+
+    public void setSnow(Snow snow) {
+        this.snow = snow;
+    }
 
     public Clouds getClouds() {
         return clouds;
