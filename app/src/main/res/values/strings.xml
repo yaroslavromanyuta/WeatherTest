@@ -6,4 +6,6 @@
     <string name="pressure">Давление</string>
     <string name="humidity">Влажность</string>
     <string name="wind">Ветер</string>
+    <string name="metric">metric</string>
+    <string name="imperial">imperial</string>
 </resources>

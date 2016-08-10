@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -69,12 +70,15 @@ public class ResponseGetter {
                 .build();
 
         openWeatherRetrofitServise = retrofit.create(OpenWeatherRetrofitServise.class);
-        Call<FindResponse> call = openWeatherRetrofitServise.findCityWeather(city.getCityName()
-                , context.getString(R.string.api_key));
+        Call<FindResponse> call = openWeatherRetrofitServise.findCityWeather(city.getCityName(),
+                context.getResources().getString(R.string.metric),
+                Locale.getDefault().getLanguage(),
+                context.getString(R.string.api_key));
 
         Response<FindResponse> response = null;
         response = call.execute();
 
+        Log.d(TAG, "findWeatherByCity: lang == " + Locale.getDefault().getLanguage());
         Log.d(TAG, "findWeatherByCity: " + "response created. HTTP status code= " + response.code() + "; message= " + response.message() +
                 "; success = " + response.isSuccessful() );
         Log.d(TAG, "findWeatherByCity() returned: " + response);

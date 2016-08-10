@@ -11,6 +11,8 @@ import yaroslavromanyuta.com.ua.weathertest.entities.FindResponse;
 public interface OpenWeatherRetrofitServise {
     @GET("find")
     Call<FindResponse> findCityWeather(@Query("q") String city,
+                                       @Query("units") String unitsFormat,
+                                       @Query("lang") String lang,
                                        @Query("appid") String apiKey);
 
 }

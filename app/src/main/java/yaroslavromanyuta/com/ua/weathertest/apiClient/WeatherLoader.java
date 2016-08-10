@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import yaroslavromanyuta.com.ua.weathertest.PrjectUtils;
 import yaroslavromanyuta.com.ua.weathertest.entities.City;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
 import yaroslavromanyuta.com.ua.weathertest.entities.FindResponse;
@@ -67,20 +68,7 @@ public class WeatherLoader extends AsyncTaskLoader<ArrayList<CityInfo>> {
 
                     Log.d(TAG, "loadInBackground: moreThanOne " + city.toString());
 
-                    Collections.sort(cityInfos, new Comparator<CityInfo>() {
-                        @Override
-                        public int compare(CityInfo cityInfo, CityInfo t1) {
-                            Location location1 = new Location("p1");
-                            location1.setLatitude(cityInfo.getCoord().getLat());
-                            location1.setLongitude(cityInfo.getCoord().getLon());
-
-                            Location location2 = new Location("p2");
-                            location2.setLatitude(t1.getCoord().getLat());
-                            location2.setLongitude(t1.getCoord().getLon());
-
-                            return (int) (location.distanceTo(location1) - location.distanceTo(location2));
-                        }
-                    });
+                    PrjectUtils.sortList(cityInfos,location);
                 }
 
                 if (cityInfos.size()>0) {

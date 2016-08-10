@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/txt_city_name"
-        android:gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:textColor="#030303"
+        android:textSize="25sp"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -21,7 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:id="@+id/txt_temp"/>
+        android:id="@+id/txt_temp"
+        android:textSize="22sp"
+        android:textColor="#481e1e"/>
 
     <LinearLayout
         android:orientation="horizontal"
