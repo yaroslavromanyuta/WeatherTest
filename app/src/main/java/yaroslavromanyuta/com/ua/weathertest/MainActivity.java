@@ -84,7 +84,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         cityInfoList = cityInfos;
-        listFragment.setListAdapter(new CityInfoListAdapter(cityInfos, this));
+        PrjectUtils.sortList(cityInfoList,location);
+        listFragment.setListAdapter(new CityInfoListAdapter(cityInfoList, this));
 
 
     }
