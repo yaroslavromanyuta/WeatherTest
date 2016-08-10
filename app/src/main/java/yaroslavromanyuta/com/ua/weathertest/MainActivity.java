@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Log.d(TAG, "onLoadFinished: " + cityInfo.toString());
 
         }
+
     }
 
     @Override

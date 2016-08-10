@@ -45,7 +45,10 @@ public class WeatherLoader extends AsyncTaskLoader<ArrayList<CityInfo>> {
             Log.e(TAG, "loadInBackground: getCities Exeption -> ", e );
         }
 
-        ArrayList<CityInfo> cityInfoArrayList = new ArrayList<>(cities.size());
+        ArrayList<CityInfo> cityInfoArrayList = null;
+        if (cities!=null) {
+            cityInfoArrayList = new ArrayList<>(cities.size());
+        }
 
         if (cities!=null){
             for (City city :
@@ -80,8 +83,10 @@ public class WeatherLoader extends AsyncTaskLoader<ArrayList<CityInfo>> {
                     });
                 }
 
-                if (cityInfos.size()>0)
-                cityInfoArrayList.add(cityInfos.get(0));
+                if (cityInfos.size()>0) {
+                    cityInfos.get(0).setName(city.getCityName());
+                    cityInfoArrayList.add(cityInfos.get(0));
+                }
 
 
             }
