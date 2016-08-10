@@ -15,6 +15,8 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
 import yaroslavromanyuta.com.ua.weathertest.apiClient.WeatherLoader;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
@@ -27,16 +29,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     Location location;
     ListFragment listFragment;
     FragmentManager fragmentManager;
-    FrameLayout container;
+    @BindView(R.id.container) FrameLayout container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-         container = (FrameLayout) findViewById(R.id.container);
+        ButterKnife.bind(this);
+        // container = (FrameLayout) findViewById(R.id.container);
         listFragment = new CityInfoListFragment();
         fragmentManager = getFragmentManager();
+        ;
 
 
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         listFragment.setListAdapter(new CityInfoListAdapter(cityInfos, this));
+
 
     }
 

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WeatherTest</string>
+    <string name="temp_max">Температура макс</string>
+    <string name="temp_min">Температура мин</string>
+    <string name="description">Описание</string>
+    <string name="pressure">Давление</string>
+    <string name="humidity">Влажность</string>
+    <string name="wind">Ветер</string>
 </resources>

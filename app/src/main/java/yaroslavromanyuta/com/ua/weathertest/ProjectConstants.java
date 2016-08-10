@@ -6,6 +6,7 @@ package yaroslavromanyuta.com.ua.weathertest;
 public class ProjectConstants {
 
     public static final String TAG = "WeatherTest";
+    public static final String ARGUMENT = "cityInfoArgument";
 
     public ProjectConstants(){}
 }
