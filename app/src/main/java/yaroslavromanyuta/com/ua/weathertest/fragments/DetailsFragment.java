@@ -13,12 +13,13 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import yaroslavromanyuta.com.ua.weathertest.R;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
 
 import static  yaroslavromanyuta.com.ua.weathertest.ProjectConstants.*;
 
-public class DetailsFragmentFragment extends Fragment  {
+public class DetailsFragment extends Fragment  {
 
     @BindView(R.id.txt_city_name) TextView txtCityName;
     @BindView(R.id.img_icon) ImageView imgIcon;
@@ -28,6 +29,8 @@ public class DetailsFragmentFragment extends Fragment  {
     @BindView(R.id.txt_pressure) TextView txtPressure;
     @BindView(R.id.txt_humidity) TextView txtHumidity;
     @BindView(R.id.txt_wind) TextView txtWind;
+    @BindView(R.id.txt_description) TextView txtDescription;
+    private Unbinder unbinder;
 
     CityInfo cityInfo;
 
@@ -42,9 +45,12 @@ public class DetailsFragmentFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.details_fragment, null);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
+
+        cityInfo = new Gson().fromJson(getArguments().getString(ARGUMENT), CityInfo.class);
 
         txtCityName.setText(cityInfo.getName());
+        txtDescription.setText(cityInfo.getWeather().get(0).getDescription());
         txtTemp.setText(String.valueOf(cityInfo.getMain().getTemp()));
         txtTempMin.setText(String.valueOf(cityInfo.getMain().getTempMin()));
         txtTempMax.setText(String.valueOf(cityInfo.getMain().getTempMax()));
@@ -62,14 +68,15 @@ public class DetailsFragmentFragment extends Fragment  {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        unbinder.unbind();
     }
 
-    public static DetailsFragmentFragment newInstanse (String json){
-        DetailsFragmentFragment detailsFragmentFragment = new DetailsFragmentFragment();
+    public static DetailsFragment newInstanse (String json){
+        DetailsFragment detailsFragment = new DetailsFragment();
         Bundle args = new Bundle();
         args.putString(ARGUMENT, json);
-        detailsFragmentFragment.setArguments(args);
-        return detailsFragmentFragment;
+        detailsFragment.setArguments(args);
+        return detailsFragment;
     }
 
 }
