@@ -1,6 +1,7 @@
 package yaroslavromanyuta.com.ua.weathertest.fragments;
 
 import android.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import yaroslavromanyuta.com.ua.weathertest.MainActivity;
 import yaroslavromanyuta.com.ua.weathertest.R;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
 
@@ -58,7 +60,7 @@ public class DetailsFragment extends Fragment  {
         txtPressure.setText(String.valueOf(cityInfo.getMain().getPressure()));
         txtWind.setText(String.valueOf(cityInfo.getWind().getSpeed()));
         Picasso.with(getActivity().getBaseContext())
-                .load("http://openweathermap.org/img/w/"+cityInfo.getWeather().get(0).getIcon()+".png")
+                .load(getString(R.string.icon_url)+cityInfo.getWeather().get(0).getIcon()+".png")
                 .into(imgIcon);
 
         return view;

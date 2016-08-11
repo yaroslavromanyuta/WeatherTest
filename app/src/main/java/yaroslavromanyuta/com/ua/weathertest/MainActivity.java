@@ -9,6 +9,9 @@ import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +26,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
 import yaroslavromanyuta.com.ua.weathertest.apiClient.WeatherLoader;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
@@ -33,6 +39,7 @@ import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.ARGUMENT;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.KEY_CITY_INFO_ARRAY;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 
+@RuntimePermissions
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<CityInfo>>, CityInfoListFragment.OnItemClickListener {
 
     Location location = null;
@@ -46,20 +53,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-
         container = (FrameLayout) findViewById(R.id.container);
         if (listFragment == null)
         listFragment = new CityInfoListFragment();
@@ -72,27 +65,49 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         if (cityInfoList == null) {
-            getLoaderManager().restartLoader(0, null, this);
-            getLoaderManager().getLoader(0).forceLoad();
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                MainActivityPermissionsDispatcher.updateWithCheck(this);
+            } else {
+                update();
+            }
+
         }else{
             listFragment.setListAdapter(new CityInfoListAdapter(cityInfoList, this));
         }
 
         if (savedInstanceState == null) {
-            // при первом запуске программы
             FragmentTransaction fragmentTransaction = fragmentManager
                     .beginTransaction();
-            // добавляем в контейнер при помощи метода add()
             fragmentTransaction.add(R.id.container, listFragment);
             fragmentTransaction.commit();
         }else{
             FragmentTransaction fragmentTransaction = fragmentManager
                     .beginTransaction();
-            // добавляем в контейнер при помощи метода add()
             fragmentTransaction.replace(R.id.container, listFragment);
             fragmentTransaction.commit();
-            onItemSelected(savedInstanceState.getInt("id"));
         }
+    }
+
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void update(){
+        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().getLoader(0).forceLoad();
+    }
+
+    @OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void updateList(){
+        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().getLoader(0).forceLoad();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -100,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
 
         outState.putString(KEY_CITY_INFO_ARRAY,new Gson().toJson(cityInfoList));
-        outState.putInt("id", 2);
+
     }
 
     @Override

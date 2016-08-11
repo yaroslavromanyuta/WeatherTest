@@ -74,7 +74,7 @@ public class CityInfoListAdapter extends BaseAdapter {
         viewHolder.temp.setText(String.valueOf(cityInfo.getMain().getTemp()));
         viewHolder.name.setText(cityInfo.getName());
         Picasso.with(context)
-                .load("http://openweathermap.org/img/w/"+cityInfo.getWeather().get(0).getIcon()+".png")
+                .load(context.getString(R.string.icon_url)+cityInfo.getWeather().get(0).getIcon()+".png")
                 .into(viewHolder.icon);
 
         return view;
