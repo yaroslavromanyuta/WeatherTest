@@ -36,7 +36,7 @@ import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<CityInfo>>, CityInfoListFragment.OnItemClickListener {
 
     Location location = null;
-    ListFragment listFragment;
+    ListFragment listFragment = null;
     FragmentManager fragmentManager;
     ArrayList<CityInfo> cityInfoList = null;
     FrameLayout container;
@@ -45,16 +45,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        container = (FrameLayout) findViewById(R.id.container);
-        listFragment = new CityInfoListFragment();
-        fragmentManager = getFragmentManager();
-
-        if (savedInstanceState != null) {
-            cityInfoList = new Gson().fromJson(savedInstanceState.getString(KEY_CITY_INFO_ARRAY),
-                    new TypeToken<List<CityInfo>>() {
-                    }.getType());
-        }
 
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -68,6 +58,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return;
         }
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+
+        container = (FrameLayout) findViewById(R.id.container);
+        if (listFragment == null)
+        listFragment = new CityInfoListFragment();
+        fragmentManager = getFragmentManager();
+
+        if (savedInstanceState != null) {
+            cityInfoList = new Gson().fromJson(savedInstanceState.getString(KEY_CITY_INFO_ARRAY),
+                    new TypeToken<List<CityInfo>>() {
+                    }.getType());
+        }
 
         if (cityInfoList == null) {
             getLoaderManager().restartLoader(0, null, this);
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // добавляем в контейнер при помощи метода add()
             fragmentTransaction.replace(R.id.container, listFragment);
             fragmentTransaction.commit();
+            onItemSelected(savedInstanceState.getInt("id"));
         }
     }
 
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
 
         outState.putString(KEY_CITY_INFO_ARRAY,new Gson().toJson(cityInfoList));
+        outState.putInt("id", 2);
     }
 
     @Override
