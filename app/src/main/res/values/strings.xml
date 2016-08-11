@@ -8,4 +8,5 @@
     <string name="wind">Ветер</string>
     <string name="metric">metric</string>
     <string name="imperial">imperial</string>
+    <string name="error">Данные не были загружены, проверьте интернет соединение.</string>
 </resources>
