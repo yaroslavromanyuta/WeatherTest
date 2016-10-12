@@ -1,4 +1,4 @@
-package yaroslavromanyuta.com.ua.weathertest.apiClient;
+package yaroslavromanyuta.com.ua.weathertest.apiclient;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -7,14 +7,11 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import yaroslavromanyuta.com.ua.weathertest.PrjectUtils;
 import yaroslavromanyuta.com.ua.weathertest.entities.City;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
-import yaroslavromanyuta.com.ua.weathertest.entities.FindResponse;
 
 import static  yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 
@@ -23,8 +20,8 @@ import static  yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
  */
 public class WeatherLoader extends AsyncTaskLoader<ArrayList<CityInfo>> {
 
-    Context context;
-    Location location;
+    private Context context;
+    private Location location;
 
     public WeatherLoader(Context context, Location location) {
         super(context);

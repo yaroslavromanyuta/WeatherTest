@@ -1,13 +1,11 @@
-package yaroslavromanyuta.com.ua.weathertest.apiClient;
+package yaroslavromanyuta.com.ua.weathertest.apiclient;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;

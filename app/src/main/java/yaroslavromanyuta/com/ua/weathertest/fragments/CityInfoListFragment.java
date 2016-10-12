@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import org.androidannotations.annotations.EFragment;
+
 import java.util.ArrayList;
 
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
@@ -16,6 +18,7 @@ import static  yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 /**
  * Created by Yaroslav on 10.08.2016.
  */
+
 public class CityInfoListFragment extends ListFragment {
 
     OnItemClickListener onItemClickListener;

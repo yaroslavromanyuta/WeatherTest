@@ -6,13 +6,10 @@ import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,16 +21,15 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
-import yaroslavromanyuta.com.ua.weathertest.apiClient.WeatherLoader;
+import yaroslavromanyuta.com.ua.weathertest.apiclient.WeatherLoader;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
 import yaroslavromanyuta.com.ua.weathertest.fragments.CityInfoListFragment;
 import yaroslavromanyuta.com.ua.weathertest.fragments.DetailsFragment;
+import yaroslavromanyuta.com.ua.weathertest.fragments.DetailsFragment_;
 
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.ARGUMENT;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.KEY_CITY_INFO_ARRAY;
@@ -52,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         container = (FrameLayout) findViewById(R.id.container);
         if (listFragment == null)
@@ -156,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (detailsFragment != null){
             detailsFragment.newInstanse(new Gson().toJson(cityInfoList.get(position)));
         }else {
-            DetailsFragment newDetailsFragment = new DetailsFragment();
+            DetailsFragment newDetailsFragment = new DetailsFragment_();
             Bundle args = new Bundle();
             args.putString(ARGUMENT, new Gson().toJson(cityInfoList.get(position)));
             newDetailsFragment.setArguments(args);
