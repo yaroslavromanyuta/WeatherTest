@@ -1,15 +1,15 @@
 package yaroslavromanyuta.com.ua.weathertest.apiclient;
 
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import rx.Observable;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityResponse;
 
 /**
  * Created by Yaroslav on 09.08.2016.
  */
-public interface CityRetrofitServise {
+public interface CityRetrofitService {
     @GET("exec")
-    Call<CityResponse> getCities(@Query("id") String id,
-                                 @Query("sheet") String sheetName);
+    Observable<CityResponse> getCities(@Query("id") String id,
+                                       @Query("sheet") String sheetName);
 }

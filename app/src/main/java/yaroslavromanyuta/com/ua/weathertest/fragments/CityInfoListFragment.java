@@ -1,20 +1,19 @@
 package yaroslavromanyuta.com.ua.weathertest.fragments;
 
-import android.app.ListFragment;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
-
-import org.androidannotations.annotations.EFragment;
 
 import java.util.ArrayList;
 
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
 import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
 
-import static  yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
+import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 /**
  * Created by Yaroslav on 10.08.2016.
  */
@@ -27,8 +26,8 @@ public class CityInfoListFragment extends ListFragment {
         void onItemSelected(int position);
     }
 
-    public void setData(ArrayList<CityInfo> cityInfos, Context context){
-        setListAdapter(new CityInfoListAdapter(cityInfos, context));
+    public void setData(ArrayList<CityInfo> cityInfos){
+        setListAdapter(new CityInfoListAdapter(cityInfos, getContext()));
     }
 
     @Override

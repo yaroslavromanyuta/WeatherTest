@@ -1,12 +1,13 @@
 
 package yaroslavromanyuta.com.ua.weathertest.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CityInfo {
