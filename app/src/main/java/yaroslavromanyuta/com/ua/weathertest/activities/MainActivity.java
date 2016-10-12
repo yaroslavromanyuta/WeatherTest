@@ -1,6 +1,7 @@
 package yaroslavromanyuta.com.ua.weathertest.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tbruyelle.rxpermissions.Permission;
 
 import java.util.ArrayList;
 
@@ -56,13 +58,30 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
         super.initActivityViews();
         listFragment = new CityInfoListFragment();
         changeFragment(R.id.container, listFragment, true);
-        update();
+        requestPermissions(Manifest.permission.ACCESS_COARSE_LOCATION);
     }
 
-    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-    void update(){
-        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+    @Override
+    protected void catchPermissionResult(Permission permission) {
+        switch (permission.name) {
+            case Manifest.permission.ACCESS_COARSE_LOCATION:
+            case Manifest.permission.ACCESS_FINE_LOCATION:
+                if (!permission.granted){
+                    showAlertDialog(getString(R.string.allert_dialog_no_location_permission),
+                            (dialog, which) -> update(false));
+                } else {
+                    update(true);
+                }
+                break;
+        }
+    }
+
+    void update(boolean isPermissionGranted){
+
+        if (isPermissionGranted) {
+            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
 
         ObservableCreator observableCreator = new ObservableCreator(this);
         observableCreator.createCityObservable()
@@ -70,73 +89,11 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
                 .observeOn(Schedulers.io())
                 .map(CityResponse::getCities)
                 .flatMap(Observable::from)
-//                .subscribe(city -> Log.d(TAG, "update() called " + city));
                 .flatMap(observableCreator::createFindWeatherObservable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(findResponse -> (findResponse.getCount()>0))
-                .subscribe(new Subscriber<FindResponse>() {
-                    @Override
-                    public void onCompleted() {
-                        //listFragment.setData(cityInfoList);
-                        Log.d(TAG, "onCompleted() called");
-                        if (cityInfoList == null){
-                            listFragment.setEmptyText(getText(R.string.error));
-                            listFragment.setListAdapter(new CityInfoListAdapter(new ArrayList<CityInfo>(0), MainActivity.this));
-                        }else {
-                            PrjectUtils.sortList(cityInfoList, location);
-                            listFragment.setListAdapter(new CityInfoListAdapter(cityInfoList, MainActivity.this));
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "onError() called with: e = [" + e + "]");
-                    }
-
-                    @Override
-                    public void onNext(FindResponse findResponse) {
-                        Log.d(TAG, "onNext() called with: findResponse = [" + findResponse + "]");
-                        if (!findResponse.getCityInfo().isEmpty()) {
-                            cityInfoList.add(PrjectUtils.getSortedCityInfoList(findResponse.getCityInfo(), location).get(0));
-                        }
-                    }
-                });
-    }
-
-    @OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
-    void updateList(){
-        ObservableCreator observableCreator = new ObservableCreator(this);
-
-        observableCreator.createCityObservable()
-                .map(CityResponse::getCities)
-                .flatMap(cities -> Observable.from(cities))
-                .flatMap(city -> observableCreator.createFindWeatherObservable(city))
-                .subscribe(new Subscriber<FindResponse>() {
-                    @Override
-                    public void onCompleted() {
-                        listFragment.setData(cityInfoList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(FindResponse findResponse) {
-                        cityInfoList.add(PrjectUtils.getSortedCityInfoList(findResponse.getCityInfo(),location).get(0));
-                    }
-                });
-
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+                .subscribe(responseSubscriber);
     }
 
     @Override
@@ -163,4 +120,32 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
             changeFragment(R.id.container, DetailsFragment.newInstanse(new Gson().toJson(cityInfoList.get(position))), true);
         }
     }
+
+    private Subscriber<FindResponse> responseSubscriber = new Subscriber<FindResponse>() {
+        @Override
+        public void onCompleted() {
+            //listFragment.setData(cityInfoList);
+            Log.d(TAG, "onCompleted() called");
+            if (cityInfoList == null){
+                listFragment.setEmptyText(getText(R.string.error));
+                listFragment.setListAdapter(new CityInfoListAdapter(new ArrayList<CityInfo>(0), MainActivity.this));
+            }else {
+                PrjectUtils.sortList(cityInfoList, location);
+                listFragment.setListAdapter(new CityInfoListAdapter(cityInfoList, MainActivity.this));
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.d(TAG, "onError() called with: e = [" + e + "]");
+        }
+
+        @Override
+        public void onNext(FindResponse findResponse) {
+            Log.d(TAG, "onNext() called with: findResponse = [" + findResponse + "]");
+            if (!findResponse.getCityInfo().isEmpty()) {
+                cityInfoList.add(PrjectUtils.getSortedCityInfoList(findResponse.getCityInfo(), location).get(0));
+            }
+        }
+    };
 }

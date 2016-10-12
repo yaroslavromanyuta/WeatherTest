@@ -2,17 +2,23 @@ package yaroslavromanyuta.com.ua.weathertest.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.tbruyelle.rxpermissions.Permission;
+import com.tbruyelle.rxpermissions.RxPermissions;
+
 import java.util.List;
 
+import yaroslavromanyuta.com.ua.weathertest.R;
 import yaroslavromanyuta.com.ua.weathertest.fragments.BaseFragment;
 
 /**
@@ -75,6 +81,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void showWaitingDialog() {
         showWaitingDialog("");
+    }
+
+    public void showAlertDialog(String message, DialogInterface.OnClickListener onButtonClickListener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog alertDialog = builder.setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.allert_dialog_ok_button_text), onButtonClickListener)
+                .create();
+        alertDialog.show();
     }
 
     public void dismissWaitingDialog() {
@@ -140,4 +155,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             fragmentTransaction.commit();
         }
     }
+
+    protected void requestPermissions(String ... permissions){
+        RxPermissions.getInstance(this)
+                .requestEach(permissions)
+                .subscribe(this::catchPermissionResult);
+    }
+
+    protected abstract void catchPermissionResult(Permission permission);
 }
