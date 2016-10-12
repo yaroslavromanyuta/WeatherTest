@@ -1,11 +1,9 @@
 package yaroslavromanyuta.com.ua.weathertest.activities;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -14,9 +12,6 @@ import com.tbruyelle.rxpermissions.Permission;
 
 import java.util.ArrayList;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,7 +29,6 @@ import yaroslavromanyuta.com.ua.weathertest.fragments.DetailsFragment;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.KEY_CITY_INFO_ARRAY;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 
-@RuntimePermissions
 public class MainActivity extends BaseActivity implements CityInfoListFragment.OnItemClickListener {
 
     Location location = null;
@@ -57,7 +51,7 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
     protected void initActivityViews() {
         super.initActivityViews();
         listFragment = new CityInfoListFragment();
-        changeFragment(R.id.container, listFragment, true);
+        changeFragment(R.id.container, listFragment, false);
         requestPermissions(Manifest.permission.ACCESS_COARSE_LOCATION);
     }
 
@@ -72,15 +66,17 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
                 } else {
                     update(true);
                 }
+                showWaitingDialog(getString(R.string.wait_dialog_message), false);
                 break;
         }
     }
 
     void update(boolean isPermissionGranted){
-
+        Log.d(TAG, "update() called with: isPermissionGranted = [" + isPermissionGranted + "]");
         if (isPermissionGranted) {
             LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            Log.d(TAG, "update() called with: location = " + location);
         }
 
         ObservableCreator observableCreator = new ObservableCreator(this);
@@ -133,10 +129,15 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
                 PrjectUtils.sortList(cityInfoList, location);
                 listFragment.setListAdapter(new CityInfoListAdapter(cityInfoList, MainActivity.this));
             }
+
+            dismissWaitingDialog();
         }
 
         @Override
         public void onError(Throwable e) {
+            listFragment.setEmptyText(getText(R.string.error));
+            listFragment.setListAdapter(new CityInfoListAdapter(new ArrayList<CityInfo>(0), MainActivity.this));
+            dismissWaitingDialog();
             Log.d(TAG, "onError() called with: e = [" + e + "]");
         }
 

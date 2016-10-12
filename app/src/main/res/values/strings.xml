@@ -11,5 +11,6 @@
     <string name="error">Данные не были загружены, проверьте интернет соединение.</string>
     <string name="allert_dialog_ok_button_text">Хорошо</string>
     <string name="allert_dialog_no_location_permission">Ваше местоположение не будет учитываться при сортировке данных.</string>
+    <string name="wait_dialog_message">Данные обновляются. Пожалуйста подождите.</string>
     <string name="image_dscr">weather_icon</string>
 </resources>
