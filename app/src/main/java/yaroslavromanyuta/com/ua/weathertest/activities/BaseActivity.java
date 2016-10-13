@@ -18,6 +18,8 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.util.List;
 
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import yaroslavromanyuta.com.ua.weathertest.R;
 import yaroslavromanyuta.com.ua.weathertest.fragments.BaseFragment;
 
@@ -28,6 +30,7 @@ import yaroslavromanyuta.com.ua.weathertest.fragments.BaseFragment;
 public abstract class BaseActivity extends AppCompatActivity {
     protected boolean isLoading;
     private ProgressDialog progressDialog;
+    private CompositeSubscription compositeSubscription;
 
     public boolean isLoading() {
         return isLoading;
@@ -40,6 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        compositeSubscription.unsubscribe();
         dismissWaitingDialog();
     }
 
@@ -53,7 +57,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        compositeSubscription = new CompositeSubscription();
 
+    }
+
+    protected void addSubscriptionToComposite(Subscription subscription){
+        compositeSubscription.add(subscription);
+    }
+
+    protected void addSubscriptionToComposite(Subscription ... subscriptions){
+        compositeSubscription.addAll(subscriptions);
     }
 
     protected void attachActivityViews() {

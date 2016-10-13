@@ -39,24 +39,18 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha6'
     compile 'org.apache.directory.studio:org.apache.commons.lang:2.6'
-
     compile 'org.greenrobot:greendao:3.1.0'
-
     compile 'com.google.code.gson:gson:2.7'
-
     compile 'com.squareup.picasso:picasso:2.5.2'
-
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:retrofit-converters:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-
     compile 'io.reactivex:rxjava:1.2.1'
     compile 'io.reactivex:rxandroid:1.2.1'
-
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.1@aar'
-
+    compile 'pl.charmas.android:android-reactive-location:0.10@aar'
     annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
-
+    compile 'com.google.android.gms:play-services-location:9.6.1'
 }

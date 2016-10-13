@@ -1,20 +1,29 @@
 package yaroslavromanyuta.com.ua.weathertest.activities;
 
 import android.Manifest;
+import android.content.IntentSender;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions.Permission;
 
 import java.util.ArrayList;
 
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import yaroslavromanyuta.com.ua.weathertest.PrjectUtils;
 import yaroslavromanyuta.com.ua.weathertest.R;
@@ -27,6 +36,7 @@ import yaroslavromanyuta.com.ua.weathertest.fragments.CityInfoListFragment;
 import yaroslavromanyuta.com.ua.weathertest.fragments.DetailsFragment;
 
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.KEY_CITY_INFO_ARRAY;
+import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.REQUEST_CHECK_SETTINGS;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 
 public class MainActivity extends BaseActivity implements CityInfoListFragment.OnItemClickListener {
@@ -49,6 +59,7 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
 
     @Override
     protected void initActivityViews() {
+        Log.d(TAG, "initActivityViews() called");
         super.initActivityViews();
         listFragment = new CityInfoListFragment();
         changeFragment(R.id.container, listFragment, false);
@@ -57,30 +68,71 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
 
     @Override
     protected void catchPermissionResult(Permission permission) {
+        Log.d(TAG, "catchPermissionResult() called with: permission = [" + permission + "]");
         switch (permission.name) {
             case Manifest.permission.ACCESS_COARSE_LOCATION:
             case Manifest.permission.ACCESS_FINE_LOCATION:
                 if (!permission.granted){
-                    showAlertDialog(getString(R.string.allert_dialog_no_location_permission),
-                            (dialog, which) -> update(false));
+                    showLocationAllertDialog();
                 } else {
-                    update(true);
+                    getLastKnownLocation();
                 }
                 showWaitingDialog(getString(R.string.wait_dialog_message), false);
                 break;
         }
     }
 
-    void update(boolean isPermissionGranted){
-        Log.d(TAG, "update() called with: isPermissionGranted = [" + isPermissionGranted + "]");
-        if (isPermissionGranted) {
-            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            Log.d(TAG, "update() called with: location = " + location);
-        }
+    private void showLocationAllertDialog() {
+        Log.d(TAG, "showLocationAllertDialog() called");
+        showAlertDialog(getString(R.string.allert_dialog_no_location_permission),
+                (dialog, which) -> update());
+    }
 
+    private void getLastKnownLocation(){
+        Log.d(TAG, "getLastKnownLocation() called");
+        ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(this);
+        final LocationRequest locationRequest = LocationRequest.create()
+                .setNumUpdates(1)
+                .setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        Subscription subscription = locationProvider.checkLocationSettings(
+                new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+                .setAlwaysShow(true)
+                .build()
+        )
+                .doOnNext(locationSettingsResult -> {
+                    Status status = locationSettingsResult.getStatus();
+                    if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
+                        try {
+                            status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException th) {
+                            Log.e("MainActivity", "Error opening settings activity.", th);
+                        }
+                    }
+                })
+                .flatMap(new Func1<LocationSettingsResult, Observable<Location>>() {
+                    @Override
+                    public Observable<Location> call(LocationSettingsResult locationSettingsResult) {
+                        return locationProvider.getUpdatedLocation(locationRequest);
+                    }
+                })
+                .subscribe(location1 -> {
+                    Log.d(TAG, "onNext() called with: location = [" + location + "]");
+                    location = location1;
+                    update();
+                }
+                , throwable -> {
+                    showLocationAllertDialog();
+                    update();
+                }
+        );
+        addSubscriptionToComposite(subscription);
+    }
+
+    void update(){
+        Log.d(TAG, "update() called");
         ObservableCreator observableCreator = new ObservableCreator(this);
-        observableCreator.createCityObservable()
+        Subscription subscription = observableCreator.createCityObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(CityResponse::getCities)
@@ -90,6 +142,7 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(findResponse -> (findResponse.getCount()>0))
                 .subscribe(responseSubscriber);
+        addSubscriptionToComposite(subscription);
     }
 
     @Override

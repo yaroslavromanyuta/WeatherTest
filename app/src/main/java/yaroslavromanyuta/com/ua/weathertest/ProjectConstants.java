@@ -8,6 +8,7 @@ public class ProjectConstants {
     public static final String TAG = "WeatherTest";
     public static final String ARGUMENT = "cityInfoArgument";
     public static final String KEY_CITY_INFO_ARRAY = "cityInfoArray";
+    public static final int REQUEST_CHECK_SETTINGS = 0;
 
 
     public ProjectConstants(){}
