@@ -11,7 +11,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
-import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
 
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 /**

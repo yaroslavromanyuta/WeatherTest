@@ -1,5 +1,5 @@
 
-package yaroslavromanyuta.com.ua.weathertest.entities;
+package yaroslavromanyuta.com.ua.weathertest.entitiyModels;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

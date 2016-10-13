@@ -5,7 +5,7 @@ import android.location.Location;
 import java.util.Collections;
 import java.util.List;
 
-import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
 
 /**
  * Created by Yaroslav on 11.08.2016.

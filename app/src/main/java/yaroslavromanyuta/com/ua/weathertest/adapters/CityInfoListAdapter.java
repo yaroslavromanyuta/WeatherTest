@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import yaroslavromanyuta.com.ua.weathertest.R;
-import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
 
 /**
  * Created by Yaroslav on 10.08.2016.

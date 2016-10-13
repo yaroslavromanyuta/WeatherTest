@@ -20,9 +20,9 @@ import yaroslavromanyuta.com.ua.weathertest.PrjectUtils;
 import yaroslavromanyuta.com.ua.weathertest.R;
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
 import yaroslavromanyuta.com.ua.weathertest.apiclient.ObservableCreator;
-import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
-import yaroslavromanyuta.com.ua.weathertest.entities.CityResponse;
-import yaroslavromanyuta.com.ua.weathertest.entities.FindResponse;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityResponse;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.FindResponse;
 import yaroslavromanyuta.com.ua.weathertest.fragments.CityInfoListFragment;
 import yaroslavromanyuta.com.ua.weathertest.fragments.DetailsFragment;
 

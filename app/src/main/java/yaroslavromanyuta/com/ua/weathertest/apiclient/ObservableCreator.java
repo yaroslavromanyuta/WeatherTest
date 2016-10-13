@@ -11,9 +11,9 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import yaroslavromanyuta.com.ua.weathertest.R;
-import yaroslavromanyuta.com.ua.weathertest.entities.City;
-import yaroslavromanyuta.com.ua.weathertest.entities.CityResponse;
-import yaroslavromanyuta.com.ua.weathertest.entities.FindResponse;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.City;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityResponse;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.FindResponse;
 
 
 /**

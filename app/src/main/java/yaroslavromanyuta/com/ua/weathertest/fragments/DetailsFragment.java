@@ -12,7 +12,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 import yaroslavromanyuta.com.ua.weathertest.R;
-import yaroslavromanyuta.com.ua.weathertest.entities.CityInfo;
+import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
 
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.ARGUMENT;
 
