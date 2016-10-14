@@ -39,7 +39,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha6'
     compile 'org.apache.directory.studio:org.apache.commons.lang:2.6'
-    compile 'org.greenrobot:greendao:3.1.0'
+    compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
