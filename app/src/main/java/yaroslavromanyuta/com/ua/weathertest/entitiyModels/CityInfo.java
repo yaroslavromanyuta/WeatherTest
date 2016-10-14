@@ -26,7 +26,7 @@ public class CityInfo {
     private Main main;
     @SerializedName("dt")
     @Expose
-    private int dt;
+    private long dt;
     @SerializedName("wind")
     @Expose
     private Wind wind;
@@ -50,7 +50,7 @@ public class CityInfo {
     public CityInfo() {
     }
 
-    public CityInfo(int id, String name, Coord coord, Main main, int dt, Wind wind, Sys sys, Rain rain, Clouds clouds, Snow snow, java.util.List<Weather> weather) {
+    public CityInfo(int id, String name, Coord coord, Main main, long dt, Wind wind, Sys sys, Rain rain, Clouds clouds, Snow snow, java.util.List<Weather> weather) {
         this.id = id;
         this.name = name;
         this.coord = coord;
@@ -97,11 +97,11 @@ public class CityInfo {
         this.main = main;
     }
 
-    public int getDt() {
+    public long getDt() {
         return dt;
     }
 
-    public void setDt(int dt) {
+    public void setDt(long dt) {
         this.dt = dt;
     }
 
