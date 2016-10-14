@@ -34,6 +34,7 @@ import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityResponse;
 import yaroslavromanyuta.com.ua.weathertest.entitiyModels.FindResponse;
 import yaroslavromanyuta.com.ua.weathertest.fragments.CityInfoListFragment;
 import yaroslavromanyuta.com.ua.weathertest.fragments.DetailsFragment;
+import yaroslavromanyuta.com.ua.weathertest.updateservice.UpdateService;
 
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.KEY_CITY_INFO_ARRAY;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.REQUEST_CHECK_SETTINGS;
@@ -131,18 +132,20 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
 
     void update(){
         Log.d(TAG, "update() called");
-        ObservableCreator observableCreator = new ObservableCreator(this);
-        Subscription subscription = observableCreator.createCityObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .map(CityResponse::getCities)
-                .flatMap(Observable::from)
-                .flatMap(observableCreator::createFindWeatherObservable)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(findResponse -> (findResponse.getCount()>0))
-                .subscribe(responseSubscriber);
-        addSubscriptionToComposite(subscription);
+
+        startService(UpdateService.getLaunchIntent(location));
+//        ObservableCreator observableCreator = new ObservableCreator(this);
+//        Subscription subscription = observableCreator.createCityObservable()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .map(CityResponse::getCities)
+//                .flatMap(Observable::from)
+//                .flatMap(observableCreator::createFindWeatherObservable)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(findResponse -> (findResponse.getCount()>0))
+//                .subscribe(responseSubscriber);
+//        addSubscriptionToComposite(subscription);
     }
 
     @Override
@@ -170,36 +173,36 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
         }
     }
 
-    private Subscriber<FindResponse> responseSubscriber = new Subscriber<FindResponse>() {
-        @Override
-        public void onCompleted() {
-            //listFragment.setData(cityInfoList);
-            Log.d(TAG, "onCompleted() called");
-            if (cityInfoList == null){
-                listFragment.setEmptyText(getText(R.string.error));
-                listFragment.setListAdapter(new CityInfoListAdapter(new ArrayList<CityInfo>(0), MainActivity.this));
-            }else {
-                PrjectUtils.sortList(cityInfoList, location);
-                listFragment.setListAdapter(new CityInfoListAdapter(cityInfoList, MainActivity.this));
-            }
-
-            dismissWaitingDialog();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            listFragment.setEmptyText(getText(R.string.error));
-            listFragment.setListAdapter(new CityInfoListAdapter(new ArrayList<CityInfo>(0), MainActivity.this));
-            dismissWaitingDialog();
-            Log.d(TAG, "onError() called with: e = [" + e + "]");
-        }
-
-        @Override
-        public void onNext(FindResponse findResponse) {
-            Log.d(TAG, "onNext() called with: findResponse = [" + findResponse + "]");
-            if (!findResponse.getCityInfo().isEmpty()) {
-                cityInfoList.add(PrjectUtils.getSortedCityInfoList(findResponse.getCityInfo(), location).get(0));
-            }
-        }
-    };
+//    private Subscriber<FindResponse> responseSubscriber = new Subscriber<FindResponse>() {
+//        @Override
+//        public void onCompleted() {
+//            //listFragment.setData(cityInfoList);
+//            Log.d(TAG, "onCompleted() called");
+//            if (cityInfoList == null){
+//                listFragment.setEmptyText(getText(R.string.error));
+//                listFragment.setListAdapter(new CityInfoListAdapter(new ArrayList<CityInfo>(0), MainActivity.this));
+//            }else {
+//                PrjectUtils.sortList(cityInfoList, location);
+//                listFragment.setListAdapter(new CityInfoListAdapter(cityInfoList, MainActivity.this));
+//            }
+//
+//            dismissWaitingDialog();
+//        }
+//
+//        @Override
+//        public void onError(Throwable e) {
+//            listFragment.setEmptyText(getText(R.string.error));
+//            listFragment.setListAdapter(new CityInfoListAdapter(new ArrayList<CityInfo>(0), MainActivity.this));
+//            dismissWaitingDialog();
+//            Log.d(TAG, "onError() called with: e = [" + e + "]");
+//        }
+//
+//        @Override
+//        public void onNext(FindResponse findResponse) {
+//            Log.d(TAG, "onNext() called with: findResponse = [" + findResponse + "]");
+//            if (!findResponse.getCityInfo().isEmpty()) {
+//                cityInfoList.add(PrjectUtils.getSortedCityInfoList(findResponse.getCityInfo(), location).get(0));
+//            }
+//        }
+//    };
 }

@@ -34,6 +34,7 @@ public class CityInfoDB {
     private String weatherMain;
     private String weatherDescription;
     private String weatherIcon;
+
     @Generated(hash = 1099974940)
     public CityInfoDB(long id, String name, double cordLon, double cordLat,
             double temp, int humidity, double pressure, double tempMin,
@@ -63,9 +64,11 @@ public class CityInfoDB {
         this.weatherDescription = weatherDescription;
         this.weatherIcon = weatherIcon;
     }
+
     @Generated(hash = 1201673776)
     public CityInfoDB() {
     }
+
     public long getId() {
         return this.id;
     }
