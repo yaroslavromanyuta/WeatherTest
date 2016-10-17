@@ -1,8 +1,8 @@
 package yaroslavromanyuta.com.ua.weathertest.entetiesbd;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 /**
  * Created by Yaroslav on 14.10.2016.

@@ -1,6 +1,7 @@
 package yaroslavromanyuta.com.ua.weathertest.activities;
 
 import android.Manifest;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
@@ -16,36 +17,39 @@ import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions.Permission;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Observer;
 
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import yaroslavromanyuta.com.ua.weathertest.PrjectUtils;
 import yaroslavromanyuta.com.ua.weathertest.R;
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
-import yaroslavromanyuta.com.ua.weathertest.apiclient.ObservableCreator;
+import yaroslavromanyuta.com.ua.weathertest.application.WeatherApp;
+import yaroslavromanyuta.com.ua.weathertest.entetiesbd.CityInfoDB;
+import yaroslavromanyuta.com.ua.weathertest.entetiesbd.DaoSession;
 import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
-import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityResponse;
-import yaroslavromanyuta.com.ua.weathertest.entitiyModels.FindResponse;
 import yaroslavromanyuta.com.ua.weathertest.fragments.CityInfoListFragment;
 import yaroslavromanyuta.com.ua.weathertest.fragments.DetailsFragment;
+import yaroslavromanyuta.com.ua.weathertest.updateservice.UpdateBroadcastReceiver;
 import yaroslavromanyuta.com.ua.weathertest.updateservice.UpdateService;
 
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.KEY_CITY_INFO_ARRAY;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.REQUEST_CHECK_SETTINGS;
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 
-public class MainActivity extends BaseActivity implements CityInfoListFragment.OnItemClickListener {
+public class MainActivity extends BaseActivity implements CityInfoListFragment.OnItemClickListener, Observer {
 
-    Location location = null;
-    ArrayList<CityInfo> cityInfoList = new ArrayList<>(3);
+    private Location location = null;
+    private ArrayList<CityInfo> cityInfoList = new ArrayList<>(3);
 
-    CityInfoListFragment listFragment = null;
+    private CityInfoListFragment listFragment = null;
+
+    private UpdateBroadcastReceiver updateBroadcastReceiver;
+
+    DaoSession daoSession;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,9 +66,13 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
     protected void initActivityViews() {
         Log.d(TAG, "initActivityViews() called");
         super.initActivityViews();
+        updateBroadcastReceiver = new UpdateBroadcastReceiver(this);
+        registerReceiver(updateBroadcastReceiver,new IntentFilter(UpdateBroadcastReceiver.BROADCAST_UPDATE_ACTION));
+        daoSession = ((WeatherApp) getApplication()).getDaoSession();
         listFragment = new CityInfoListFragment();
         changeFragment(R.id.container, listFragment, false);
         requestPermissions(Manifest.permission.ACCESS_COARSE_LOCATION);
+
     }
 
     @Override
@@ -130,10 +138,10 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
         addSubscriptionToComposite(subscription);
     }
 
-    void update(){
+    private void update(){
         Log.d(TAG, "update() called");
 
-        startService(UpdateService.getLaunchIntent(location));
+        startService(UpdateService.getLaunchIntent(this, location));
 //        ObservableCreator observableCreator = new ObservableCreator(this);
 //        Subscription subscription = observableCreator.createCityObservable()
 //                .subscribeOn(Schedulers.io())
@@ -162,15 +170,24 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
     }
 
     @Override
-    public void onItemSelected(int position) {
+    public void onItemSelected(long id) {
 
         DetailsFragment detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.details_fragment);
 
         if (detailsFragment != null){
-            detailsFragment.newInstanse(new Gson().toJson(cityInfoList.get(position)));
+            detailsFragment.newInstanse(id);
         }else {
-            changeFragment(R.id.container, DetailsFragment.newInstanse(new Gson().toJson(cityInfoList.get(position))), true);
+            changeFragment(R.id.container, DetailsFragment.newInstanse(id), true);
         }
+    }
+
+    @Override
+    public void update(java.util.Observable o, Object arg) {
+        Log.d(TAG, "update() called with: o = [" + o + "], arg = [" + arg + "]");
+        dismissWaitingDialog();
+        List<CityInfoDB> weather = daoSession.getCityInfoDBDao().loadAll();
+        PrjectUtils.sortDBList(weather, location);
+        listFragment.setListAdapter(new CityInfoListAdapter(weather, this));
     }
 
 //    private Subscriber<FindResponse> responseSubscriber = new Subscriber<FindResponse>() {
