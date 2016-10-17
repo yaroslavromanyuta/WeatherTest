@@ -8,10 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import yaroslavromanyuta.com.ua.weathertest.adapters.CityInfoListAdapter;
-import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
+import yaroslavromanyuta.com.ua.weathertest.entetiesbd.CityInfoDB;
 
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 /**
@@ -23,10 +23,10 @@ public class CityInfoListFragment extends ListFragment {
     OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener{
-        void onItemSelected(int position);
+        void onItemSelected(long position);
     }
 
-    public void setData(ArrayList<CityInfo> cityInfos){
+    public void setData(List<CityInfoDB> cityInfos){
         setListAdapter(new CityInfoListAdapter(cityInfos, getContext()));
     }
 
@@ -60,6 +60,6 @@ public class CityInfoListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        onItemClickListener.onItemSelected(position);
+        onItemClickListener.onItemSelected(id);
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
@@ -12,7 +11,8 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 import yaroslavromanyuta.com.ua.weathertest.R;
-import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
+import yaroslavromanyuta.com.ua.weathertest.application.WeatherApp;
+import yaroslavromanyuta.com.ua.weathertest.entetiesbd.CityInfoDB;
 
 import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.ARGUMENT;
 
@@ -29,35 +29,36 @@ public class DetailsFragment extends BaseFragment  {
     @ViewById(R.id.txt_wind) TextView txtWind;
     @ViewById(R.id.txt_description) TextView txtDescription;
 
-    CityInfo cityInfo;
+    private CityInfoDB cityInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        cityInfo = new Gson().fromJson(getArguments().getString(ARGUMENT), CityInfo.class);
+        cityInfo = ((WeatherApp) getActivity().getApplication()).getDaoSession().getCityInfoDBDao()
+                .load(getArguments().getLong(ARGUMENT));
     }
 
     @AfterViews
     protected void initFragmentViews() {
-        cityInfo = new Gson().fromJson(getArguments().getString(ARGUMENT), CityInfo.class);
+
         txtCityName.setText(cityInfo.getName());
-        txtDescription.setText(cityInfo.getWeather().get(0).getDescription());
-        txtTemp.setText(String.valueOf(cityInfo.getMain().getTemp()));
-        txtTempMin.setText(String.valueOf(cityInfo.getMain().getTempMin()));
-        txtTempMax.setText(String.valueOf(cityInfo.getMain().getTempMax()));
-        txtHumidity.setText(String.valueOf(cityInfo.getMain().getHumidity()));
-        txtPressure.setText(String.valueOf(cityInfo.getMain().getPressure()));
-        txtWind.setText(String.valueOf(cityInfo.getWind().getSpeed()));
+        txtDescription.setText(cityInfo.getWeatherDescription());
+        txtTemp.setText(String.valueOf(cityInfo.getTemp()));
+        txtTempMin.setText(String.valueOf(cityInfo.getTempMin()));
+        txtTempMax.setText(String.valueOf(cityInfo.getTempMax()));
+        txtHumidity.setText(String.valueOf(cityInfo.getHumidity()));
+        txtPressure.setText(String.valueOf(cityInfo.getPressure()));
+        txtWind.setText(String.valueOf(cityInfo.getWindSpeed()));
         Picasso.with(getActivity().getBaseContext())
-                .load(getString(R.string.icon_url)+cityInfo.getWeather().get(0).getIcon()+".png")
+                .load(getString(R.string.icon_url, cityInfo.getWeatherIcon()))
                 .into(imgIcon);
     }
 
-    public static DetailsFragment newInstanse (String json){
+    public static DetailsFragment newInstanse (long id){
         DetailsFragment detailsFragment = new DetailsFragment_();
         Bundle args = new Bundle();
-        args.putString(ARGUMENT, json);
+        args.putLong(ARGUMENT, id);
         detailsFragment.setArguments(args);
         return detailsFragment;
     }

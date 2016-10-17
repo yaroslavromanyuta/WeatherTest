@@ -1,10 +1,14 @@
 package yaroslavromanyuta.com.ua.weathertest.updateservice;
 
+import android.util.Log;
+
 import java.util.Collection;
 
 import yaroslavromanyuta.com.ua.weathertest.entetiesbd.CityInfoDB;
 import yaroslavromanyuta.com.ua.weathertest.entetiesbd.DaoSession;
 import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
+
+import static yaroslavromanyuta.com.ua.weathertest.ProjectConstants.TAG;
 
 /**
  * Created by Yaroslav on 14.10.2016.
@@ -32,8 +36,15 @@ public class DatabaseUpdater {
             cityInfoDb.setTemp(cityInfo.getMain().getTemp());
             cityInfoDb.setTempMin(cityInfo.getMain().getTempMin());
             cityInfoDb.setTempMax(cityInfo.getMain().getTempMax());
-            cityInfoDb.setSnow3h(cityInfo.getSnow().get3h());
-            cityInfoDb.setRain3h(cityInfo.getRain().get3h());
+
+            if (cityInfo.getSnow() != null) {
+                cityInfoDb.setSnow3h(cityInfo.getSnow().get3h());
+            }
+
+            if (cityInfo.getRain() != null) {
+                cityInfoDb.setRain3h(cityInfo.getRain().get3h());
+            }
+
             cityInfoDb.setWeatherDescription(cityInfo.getWeather().get(0).getDescription());
             cityInfoDb.setWeatherId(cityInfo.getWeather().get(0).getId());
             cityInfoDb.setWeatherMain(cityInfo.getWeather().get(0).getMain());
@@ -43,10 +54,10 @@ public class DatabaseUpdater {
             cityInfoDb.setWindGust(cityInfo.getWind().getGust());
             cityInfoDb.setCountry(cityInfo.getSys().getCountry());
 
-            daoSession.getCityInfoDBDao().save(cityInfoDb);
+            daoSession.getCityInfoDBDao().insertOrReplace(cityInfoDb);
         }
 
-
+        Log.d(TAG, "updateDatabase() called with: cityInfos = [" + cityInfos + "], daoSession = [" + daoSession + "]");
 
         // TODO: 14.10.2016 send intent to broadcast to notify observer
     }

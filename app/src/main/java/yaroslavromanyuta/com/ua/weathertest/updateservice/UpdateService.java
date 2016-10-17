@@ -1,12 +1,14 @@
 package yaroslavromanyuta.com.ua.weathertest.updateservice;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -35,13 +37,14 @@ public class UpdateService extends Service{
     public static final String ACTION_START_UPDATE = "START_UPDATE";
 
     private DaoSession daoSession;
-    private List<CityInfo> cityInfoList;
+    private List<CityInfo> cityInfoList = new ArrayList<>();
     private Location location;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public static Intent getLaunchIntent(@Nullable Location location){
+    public static Intent getLaunchIntent(Context context, @Nullable Location location){
+        Log.d(TAG, "getLaunchIntent() called with: location = [" + location + "]");
 
-        Intent intent = new Intent(ACTION_START_UPDATE);
+        Intent intent = new Intent(context, UpdateService.class);
 
         if (location != null) {
             intent.putExtra(KEY_INTENT_LOCATION, location);
@@ -58,6 +61,7 @@ public class UpdateService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand() called with: intent = [" + intent + "], flags = [" + flags + "], startId = [" + startId + "]");
         daoSession = ((WeatherApp) getApplication()).getDaoSession();
         location = intent.getParcelableExtra(KEY_INTENT_LOCATION);
 
@@ -66,8 +70,14 @@ public class UpdateService extends Service{
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @Override
+    public void onDestroy() {
+        compositeSubscription.unsubscribe();
+        super.onDestroy();
+    }
+
     void update(){
-        Log.d(TAG, "update() called");
+        Log.d(TAG, "update() in service called");
         ObservableCreator observableCreator = new ObservableCreator(this);
         Subscription subscription = observableCreator.createCityObservable()
                 .subscribeOn(Schedulers.io())
@@ -91,6 +101,8 @@ public class UpdateService extends Service{
             Log.d(TAG, "onCompleted() called");
 
             DatabaseUpdater.updateDatabase(cityInfoList, daoSession);
+
+            sendBroadcast(UpdateBroadcastReceiver.getLaunchIntent());
 
             stopSelf();
         }

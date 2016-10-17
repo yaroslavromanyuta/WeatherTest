@@ -10,10 +10,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import yaroslavromanyuta.com.ua.weathertest.R;
-import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
+import yaroslavromanyuta.com.ua.weathertest.entetiesbd.CityInfoDB;
 
 /**
  * Created by Yaroslav on 10.08.2016.
@@ -21,9 +21,9 @@ import yaroslavromanyuta.com.ua.weathertest.entitiyModels.CityInfo;
 public class CityInfoListAdapter extends BaseAdapter {
 
     Context context;
-    ArrayList<CityInfo> cityInfos;
+    List<CityInfoDB> cityInfos;
 
-    public CityInfoListAdapter(ArrayList<CityInfo> cityInfos, Context context) {
+    public CityInfoListAdapter(List<CityInfoDB> cityInfos, Context context) {
         this.cityInfos = cityInfos;
         this.context = context;
     }
@@ -47,7 +47,7 @@ public class CityInfoListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return i;
+        return cityInfos.get(i).getId();
     }
 
 
@@ -69,11 +69,11 @@ public class CityInfoListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        CityInfo cityInfo = (CityInfo) getItem(i);
-        viewHolder.temp.setText(String.valueOf(cityInfo.getMain().getTemp()));
+        CityInfoDB cityInfo = (CityInfoDB) getItem(i);
+        viewHolder.temp.setText(String.valueOf(cityInfo.getTemp()));
         viewHolder.name.setText(cityInfo.getName());
         Picasso.with(context)
-                .load(context.getString(R.string.icon_url)+cityInfo.getWeather().get(0).getIcon()+".png")
+                .load(context.getString(R.string.icon_url, cityInfo.getWeatherIcon()))
                 .into(viewHolder.icon);
 
         return view;
