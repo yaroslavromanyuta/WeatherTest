@@ -71,6 +71,7 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
         daoSession = ((WeatherApp) getApplication()).getDaoSession();
         listFragment = new CityInfoListFragment();
         changeFragment(R.id.container, listFragment, false);
+        showFromDB();
         requestPermissions(Manifest.permission.ACCESS_COARSE_LOCATION);
 
     }
@@ -184,6 +185,10 @@ public class MainActivity extends BaseActivity implements CityInfoListFragment.O
     @Override
     public void update(java.util.Observable o, Object arg) {
         Log.d(TAG, "update() called with: o = [" + o + "], arg = [" + arg + "]");
+        showFromDB();
+    }
+
+    private void showFromDB() {
         dismissWaitingDialog();
         List<CityInfoDB> weather = daoSession.getCityInfoDBDao().loadAll();
         PrjectUtils.sortDBList(weather, location);
